@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/restaurants")
@@ -44,26 +46,6 @@ public class RestaurantController {
 
         String jwtToken = jwtService.generateToken(extraClaims, authenticatedRestaurant);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         LoginRestaurantResponseDto loginRestaurantResponseDto = new LoginRestaurantResponseDto()
                 .setToken(jwtToken)
                 .setExpiresIn(jwtService.getExpirationTime());
@@ -80,4 +62,38 @@ public class RestaurantController {
             return ResponseEntity.status(500).body("Error adding order item: " + e.getMessage());
         }
     }
+    @GetMapping("/profile")
+    public ResponseEntity<RestaurantDto> getRestaurantProfile(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.replace("Bearer ", "");
+            String email = jwtService.extractUsername(token);
+            Restaurant restaurant = restaurantService.getRestaurantByEmail(email);
+
+            RestaurantDto dto = new RestaurantDto(
+                    restaurant.getId(),
+                    restaurant.getUsername(),
+                    restaurant.getEmail(),
+                    restaurant.getPhoneNumber(),
+                    restaurant.getAddress()
+            );
+
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).build();  // token hatalıysa 401
+        }
+    }
+    @GetMapping("/getRestaurants")
+    public ResponseEntity<List<RestaurantDto>> getAllRestaurants() {
+        List<Restaurant> restaurants = restaurantService.getAllRestaurants();
+        List<RestaurantDto> restaurantDtos = restaurants.stream()
+                .map(r -> new RestaurantDto(
+                        r.getId(),
+                        r.getUsername(),
+                        r.getEmail(),
+                        r.getPhoneNumber(),
+                        r.getAddress()))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(restaurantDtos);
+    }
+
 }

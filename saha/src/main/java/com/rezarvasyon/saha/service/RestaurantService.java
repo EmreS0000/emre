@@ -15,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RestaurantService {
 
@@ -67,5 +69,13 @@ public class RestaurantService {
 
         menuRepository.save(menu);
     }
+    public Restaurant getRestaurantByEmail(String email) {
+        return restaurantRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+    }
+    public List<Restaurant> getAllRestaurants() {
+        return restaurantRepository.findAll();
+    }
+
 
 }

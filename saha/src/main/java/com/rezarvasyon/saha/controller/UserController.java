@@ -4,27 +4,30 @@ import com.rezarvasyon.saha.dto.LoginUserDto;
 import com.rezarvasyon.saha.dto.LoginUserResponseDto;
 import com.rezarvasyon.saha.dto.RegisterUserDto;
 import com.rezarvasyon.saha.entity.User;
+import com.rezarvasyon.saha.repository.UserRepository;
 import com.rezarvasyon.saha.service.JwtService;
 import com.rezarvasyon.saha.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
+    private final UserRepository userRepository;
     private final UserService userService;
     private final JwtService jwtService;
 
     @Autowired
     public UserController(
-            JwtService jwtService,
+            UserRepository userRepository, JwtService jwtService,
             UserService userService
     ) {
+        this.userRepository = userRepository;
         this.jwtService = jwtService;
         this.userService = userService;
     }
@@ -50,4 +53,11 @@ public class UserController {
 
         return ResponseEntity.ok(loginUserResponseDto);
     }
+//    @GetMapping("/users/me")
+//    public ResponseEntity<?> getCurrentUser(Principal principal) {
+//        User user = userRepository.findByUsername(principal.getName())
+//                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+//        return ResponseEntity.ok(user);
+//    }
+
 }

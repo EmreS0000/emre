@@ -96,4 +96,8 @@ public class OrderService {
 
         return orderRepository.findById(orderId);
     }
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
 }

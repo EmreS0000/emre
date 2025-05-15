@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -49,4 +50,14 @@ public class OrderController {
             return ResponseEntity.status(404).body("Order not found!");
         }
     }
+    @GetMapping("/getAllOrders")
+    public ResponseEntity<?> getAllOrders() {
+        try {
+            List<Order> orders = orderService.getAllOrders();
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching orders: " + e.getMessage());
+        }
+    }
+
 }

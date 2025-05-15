@@ -33,12 +33,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/payments").permitAll()
+                     //   .requestMatchers("/api/payments").permitAll()
                         .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                        .requestMatchers("/api/restaurants/register", "/api/restaurants/login","/api/orders/create").permitAll()
-                        .requestMatchers("/api/users/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/api/restaurants/**").hasAuthority("ROLE_RESTAURANT")
+                        .requestMatchers("/api/restaurants/register", "/api/restaurants/login").permitAll()
+//                        .requestMatchers("/api/users/**").hasAuthority("ROLE_USER")
+//                        .requestMatchers("/api/restaurants/getRestaurants").hasAnyAuthority("ROLE_USER","ROLE_RESTAURANT")
+//                        .requestMatchers("/api/restaurants/").hasAuthority("ROLE_RESTAURANT")
+//                        .requestMatchers("/api/orders/**").hasAuthority("ROLE_USER")
+
 
                         .anyRequest().authenticated()
                 )
